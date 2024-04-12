@@ -1,0 +1,8 @@
+.gitignore
+.dockerignore
+Dockerfile
+.env*
+.idea/
+package.json
+# bratiska-cli manifests
+manifest-*.y?ml

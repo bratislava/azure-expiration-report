@@ -1,0 +1,3 @@
+namePrefix:
+  - kind: SealedSecret
+    path: spec/template/metadata/name

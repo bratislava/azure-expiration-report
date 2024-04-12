@@ -1,0 +1,22 @@
+resources:
+  - cronjob.yml
+configurations:
+  - configuration.yml
+
+# Keep as is
+namePrefix: ${BUILD_REPOSITORY_NAME}-
+commonLabels:
+  app: ${BUILD_REPOSITORY_NAME}
+  source: ${BUILD_REPOSITORY_NAME}
+
+commonAnnotations:
+  repositoryUrl: ${BUILD_REPOSITORY_URI}
+  commit: ${COMMIT}
+  tag: ${TAG}
+  image: ${IMAGE_TAG}
+
+configMapGenerator:
+  - name: configmap
+    namespace: ${NAMESPACE}
+    envs:
+      - .env

@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: azure-expiration-report
+  namespace: ${NAMESPACE}
+spec:
+  schedule: "0 8 * * *"
+  concurrencyPolicy: Replace
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: report
+            image: ${IMAGE_TAG}
+            envFrom:
+            - secretRef:
+                name: ${BUILD_REPOSITORY_NAME}-credentials
+          imagePullSecrets:
+            - name: harbor-secret-prod-monitoring-bratiska-cli
+          restartPolicy: OnFailure

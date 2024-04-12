@@ -1,0 +1,28 @@
+name: Deploy Pipeline
+
+on:
+  push:
+    tags:
+      - 'prod**'
+
+jobs:
+  conditions:
+    name: Check for cluster conditions
+    uses: bratislava/github-actions/.github/workflows/cluster-deploy-conditions-inhouse.yml@stable
+
+  deploy-prod:
+    name: Deploy App to Production
+    if: needs.conditions.outputs.prod == 'true'
+    needs: [conditions]
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    with:
+      directory: '.'
+      namespace: monitoring
+      cluster: tkg-innov-prod
+      url: https://tkg.bratislava.sk
+      flag: --production
+      debug: --debug
+      skip_deployment_check: --skip_deployment_check
+    secrets:
+      service-account: ${{ secrets.PROD_MONITORING_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}

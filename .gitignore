@@ -1,0 +1,6 @@
+.env*
+.idea/
+**/.Azure
+*.log
+# bratiska-cli manifests
+manifest-*.y?ml

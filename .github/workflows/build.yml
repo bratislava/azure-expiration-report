@@ -1,0 +1,17 @@
+name: Build with bratiska-cli
+
+on:
+  pull_request:
+    branches:
+      - master
+      - main
+
+jobs:
+  build:
+    name: Build Docker Image
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli-inhouse.yml@stable
+    with:
+      directory: '.'
+      debug: --debug
+      version: beta
+    permissions: write-all
