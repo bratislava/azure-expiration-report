@@ -14,11 +14,13 @@ Function Get-AZSPReport
             $Currentdate = Get-Date
             $diffDays = (New-TimeSpan -Start $Currentdate -End $EndDate).Days
             $status = $(if ($diffDays -le $days) { "WARNING" } else { "OK" })
+            $tags = ($ADSP.Tag | Join-String -Separator ",")
     
             $SPReport = New-Object PSObject
             $SPReport | Add-Member -type NoteProperty -name Status -Value $status
             $SPReport | Add-Member -type NoteProperty -name DisplayName -Value $ADSP.DisplayName
             $SPReport | Add-Member -type NoteProperty -name AppID -Value $ADSP.AppID
+            $SPReport | Add-Member -type NoteProperty -name Tags -Value $tags
             $SPReport | Add-Member -type NoteProperty -name StartDate -Value $AZADAppCred.StartDateTime
             $SPReport | Add-Member -type NoteProperty -name EndDate -Value $AZADAppCred.EndDateTime
             $SPReport | Add-Member -type NoteProperty -name DaysToExpire -Value $diffDays
