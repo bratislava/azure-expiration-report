@@ -1,5 +1,6 @@
 resources:
   - cronjob.yml
+  - secrets/azure-credentials.yaml
 configurations:
   - configuration.yml
 
