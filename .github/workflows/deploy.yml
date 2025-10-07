@@ -3,7 +3,7 @@ name: Deploy Pipeline
 on:
   push:
     tags:
-      - 'prod**'
+      - "prod**"
 
 jobs:
   conditions:
@@ -18,8 +18,8 @@ jobs:
     with:
       directory: '.'
       namespace: monitoring
-      cluster: tkg-innov-prod
-      url: https://tkg.bratislava.sk
+      cluster: production
+      url: https://prod.tkgis.bratislava.sk:6443
       flag: --production
       debug: --debug
       skip_deployment_check: --skip_deployment_check
