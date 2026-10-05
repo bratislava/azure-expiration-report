@@ -8,13 +8,13 @@ on:
 jobs:
   conditions:
     name: Check for cluster conditions
-    uses: bratislava/github-actions/.github/workflows/cluster-deploy-conditions-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/cluster-deploy-conditions-inhouse.yml@v2.4.0
 
   deploy-prod:
     name: Deploy App to Production
     if: needs.conditions.outputs.prod == 'true'
     needs: [conditions]
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@v2.4.0
     with:
       directory: '.'
       namespace: monitoring
