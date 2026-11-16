@@ -1,5 +1,5 @@
 #!/usr/bin/pwsh -File
-param([Int32]$days=15) 
+param([Int32]$days=15)
 
 Function Get-AZSPReport
 {
@@ -35,7 +35,9 @@ Function Get-AZSPReport
 Write-Host "Logging in to AD..." -ForegroundColor Yellow
 $SecurePassword = ConvertTo-SecureString $Env:AZURE_PASSWORD -AsPlainText -Force
 $credentials = New-Object System.Management.Automation.PSCredential($Env:AZURE_USERNAME, $SecurePassword) 
-Connect-AzAccount -ServicePrincipal -Credential $credentials -Tenant $Env:AZURE_TENANTID
+# Stop on a failed login so the Job fails; an empty report would keep the
+# expiration alert silent.
+Connect-AzAccount -ServicePrincipal -Credential $credentials -Tenant $Env:AZURE_TENANTID -ErrorAction Stop
 
 Write-Host "Fetching Expiration Report... " -ForegroundColor Yellow
 # Report app secrets expiration and output it as array of jsons
