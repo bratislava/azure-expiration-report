@@ -1,6 +1,10 @@
 #!/usr/bin/pwsh -File
 param([Int32]$days=15)
 
+# Any failed Az call (login or Graph read) must fail the Job; a partial or
+# empty report would keep the expiration alert silent.
+$ErrorActionPreference = 'Stop'
+
 Function Get-AZSPReport
 {
     $ADSPs = Get-AzADApplication
@@ -35,9 +39,7 @@ Function Get-AZSPReport
 Write-Host "Logging in to AD..." -ForegroundColor Yellow
 $SecurePassword = ConvertTo-SecureString $Env:AZURE_PASSWORD -AsPlainText -Force
 $credentials = New-Object System.Management.Automation.PSCredential($Env:AZURE_USERNAME, $SecurePassword) 
-# Stop on a failed login so the Job fails; an empty report would keep the
-# expiration alert silent.
-Connect-AzAccount -ServicePrincipal -Credential $credentials -Tenant $Env:AZURE_TENANTID -ErrorAction Stop
+Connect-AzAccount -ServicePrincipal -Credential $credentials -Tenant $Env:AZURE_TENANTID
 
 Write-Host "Fetching Expiration Report... " -ForegroundColor Yellow
 # Report app secrets expiration and output it as array of jsons
