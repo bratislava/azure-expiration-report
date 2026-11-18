@@ -51,6 +51,23 @@ docker run -it --rm \
   expiration-report:latest
 ```
 
+## Deployment
+
+The report runs as a daily CronJob (08:00 UTC) on the production cluster. Its
+Kubernetes resources live in
+[infrastructure-deployment-configuration](https://github.com/bratislava/infrastructure-deployment-configuration)
+under `clusters/production/applications/azure-expiration-report`, and the Azure
+credentials come from Passbolt (`/kubernetes/azure-expiration-report`).
+
+- Pull requests and pushes to `master` build the image without deploying it.
+- Pushing a `prod*` tag (e.g. `prod1.2.0`) pushes
+  `harbor.bratislava.sk/azure-expiration-report/azure-expiration-report:production-<sha>`
+  and triggers the infrastructure deploy, which points the CronJob at that image.
+
+The output feeds the *Azure secrets expirations* Grafana alert, which parses the
+JSON lines from Loki (`app="azure-expiration-report"`), so keep the field order
+in `Get-AZSPReport` unchanged.
+
 ## Credits
 
 Taken and adjusted from Elan Shudnow's [Azure Code](https://github.com/ElanShudnow/AzureCode/blob/main/PowerShell/ServicePrincipalExpirationReport/ServicePrincipalExpirationReport.ps1)

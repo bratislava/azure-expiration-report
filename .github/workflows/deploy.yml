@@ -1,28 +1,27 @@
-name: Deploy Pipeline
+name: Deploy
 
+# The report runs only on the production cluster.
 on:
   push:
     tags:
       - "prod**"
 
-jobs:
-  conditions:
-    name: Check for cluster conditions
-    uses: bratislava/github-actions/.github/workflows/cluster-deploy-conditions-inhouse.yml@v2.4.0
+permissions:
+  contents: read
 
-  deploy-prod:
-    name: Deploy App to Production
-    if: needs.conditions.outputs.prod == 'true'
-    needs: [conditions]
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@v2.4.0
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/_build.yml
+    secrets: inherit
     with:
-      directory: '.'
-      namespace: monitoring
       cluster: production
-      url: https://prod.tkgis.bratislava.sk:6443
-      flag: --production
-      debug: --debug
-      skip_deployment_check: --skip_deployment_check
-    secrets:
-      service-account: ${{ secrets.PROD_MONITORING_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  trigger-deploy:
+    name: Trigger Infrastructure Deploy (production)
+    needs: build
+    uses: bratislava/github-actions/.github/workflows/trigger-infra-deploy.yml@7a3c849b65c1edbea5c3a95fd29952ae1f3e1412 # v3.0.1
+    secrets: inherit
+    with:
+      cluster: production
+      app: azure-expiration-report

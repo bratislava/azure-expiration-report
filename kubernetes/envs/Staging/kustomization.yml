@@ -1,9 +1,0 @@
-resources:
-  - ../../base
-
-configMapGenerator:
-  - name: configmap
-    namespace: ${NAMESPACE}
-    behavior: merge
-    envs:
-      - .env

@@ -1,13 +1,19 @@
 #!/usr/bin/pwsh -File
-param([Int32]$days=15) 
+param([Int32]$days=15)
+
+# Any failed Az call must fail the Job; a partial or empty report would keep
+# the expiration alert silent. The preference covers compiled cmdlets such as
+# Connect-AzAccount; the Az.Resources Graph commands are script-module
+# functions that don't inherit it, so they get -ErrorAction Stop explicitly.
+$ErrorActionPreference = 'Stop'
 
 Function Get-AZSPReport
 {
-    $ADSPs = Get-AzADApplication
+    $ADSPs = Get-AzADApplication -ErrorAction Stop
     $CustomReport = @()
     foreach ($ADSP in $ADSPs)
     {
-        $AZADAppCreds = Get-AzADAppCredential -ApplicationId $ADSP.AppID
+        $AZADAppCreds = Get-AzADAppCredential -ApplicationId $ADSP.AppID -ErrorAction Stop
         foreach ($AZADAppCred in $AZADAppCreds)
         {
             $EndDate = $AZADAppCred.EndDateTime
